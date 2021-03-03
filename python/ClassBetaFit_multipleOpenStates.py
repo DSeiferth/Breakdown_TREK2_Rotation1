@@ -28,6 +28,7 @@ class ModelBetaFit:
             expFolder = expData[1]
             print(expFolder)
             fname_N = expFolder + str(int(cutoff_fs/1e3)) + 'kHz_' + str(self.__mV) + 'mV_N.txt'
+            print('experimental data from: ', fname_N)
             fname_edges = expFolder +  str(int(cutoff_fs/1e3)) + 'kHz_' + str(self.__mV) + 'mV_edges.txt'
             self.__exp_N = np.loadtxt(fname_N);
             self.__exp_edges = np.loadtxt(fname_edges)
@@ -44,21 +45,23 @@ class ModelBetaFit:
     def GenerateGillespieTrajectory(self):
         G=auto.Matrix2Graph(self.__A)
         p=auto.steady_state(G)
+
         prob, sample_states, NoGillespie, NoMissed = Gillespie.simulation_traj(matrix=self.__A, startState=0, T=self.__T, sampling_step=self.__samplingStep)
         self.__NoGillespie = NoGillespie
-        self.__NoMissed = NoMissed
-
+        self.__NoMissed = NoMissed	
+	
         sample_indistinguishable = sample_states.copy()
         # set open state to open currentLeve
         index = sample_states == -1
-        sample_indistinguishable[index] = self.__openLevel
-        index = sample_states == self.__open
-        sample_indistinguishable[index] = self.__openLevel
+        sample_indistinguishable[index] = self.__openLevel[0]
+        for i in range(len(self.__openLevel)):
+            index = sample_states == self.__open[i]
+            sample_indistinguishable[index] = self.__openLevel[i]
 
         # make state 0 and 1, 2, 3 indistinguishable
         for i in self.__closed:
             index = sample_states == i
-            sample_indistinguishable[index] = self.__closedLevel
+            sample_indistinguishable[index] = self.__closedLevel[0]
         print('(analytical) steady state p = ',p)
         print('(simulated) Gillespie prob = ', prob)
         N = len(sample_states)
@@ -103,8 +106,8 @@ class ModelBetaFit:
             fig, ax = plt.subplots()
             fig.suptitle('cut-off frequency ' + str(int(self.__cutoff_fs/1e3)) + 'kHz', fontsize=f_size) #str(mV)+'mV; ' +
             t = np.arange(0,self.__T, self.__samplingStep)
-            ax.plot(t[0:subset], self.__sample_indistinguishable[0:subset], color='green', label='not filtered')
-            ax.plot(t[0:subset], self.__y_sos[0:subset], '--', color='black', label='filtered')
+            ax.plot(t[0:subset], self.__sample_indistinguishable[0:subset], color='yellow', label='not filtered')
+            ax.plot(t[0:subset], self.__y_sos[0:subset], '-', color='black', label='filtered')
             ax.set_xlabel('Time [s]', fontsize=f_size)
             ax.set_ylabel('Current [pA]', fontsize=f_size)
             ax.tick_params(axis='both', labelsize=f_size)
@@ -174,7 +177,6 @@ class ModelBetaFit:
         N_down = len(self.__sample_indistinguishable[0::downsampling] )
         traj =  self.__sample_indistinguishable[0::downsampling] + np.random.normal(0, self.__convolutionNoise,N_down)
         np.savetxt(outFolder + str(int(self.__cutoff_fs/1e3)) + 'kHz_NoFilter_BaselineNoise.txt', traj)
-    
     
     @property
     def NoGillespie(self):

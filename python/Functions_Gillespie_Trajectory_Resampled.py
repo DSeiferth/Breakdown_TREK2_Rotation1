@@ -51,22 +51,29 @@ def timestep(oldstate, t1, sumUp, rateInterval):
     #print(z1)
     newstate=compare(rateInterval[oldstate], z1)
     #print(newstate)
-    return [newstate, t1]
+    return [newstate, t1, dt]
 
-def simulation_traj(matrix, startState, T, sampling_step):
+def simulation_traj(matrix, startState, T, sampling_step, outputTraj=0):
     [sumUp, rateInterval]=init(matrix)
     t=0.0
     state=startState
     #memory for trajectory
     TIME=[]
     states=[]
+    duration = []
 
     while t<T:
-        [state, t]=timestep(state, t, sumUp, rateInterval)
+        [state, t, dt]=timestep(state, t, sumUp, rateInterval)
         TIME.append(t)
         states.append(state)
+        duration.append(dt)
     prob=np.zeros(len(matrix))
     
+    # output eventList from trajectory
+    if outputTraj:
+        eventList = np.vstack((states, TIME, duration))
+        np.savetxt(outputTraj, eventList.T)
+        
     N = int(T/sampling_step)
     sample_states = -np.ones(N)
     sample_step = 0
@@ -85,4 +92,4 @@ def simulation_traj(matrix, startState, T, sampling_step):
     print('number of Gillespie steps', len(states))
     print('number of sample steps ', sample_step)
     print('number of transitions not seen by sample step', count_too_small)
-    return [prob, sample_states]
+    return prob, sample_states, len(states), count_too_small
