@@ -195,6 +195,10 @@ class ModelBetaFit:
         return self.__y_sos_noise[0::self.__downsampling]
         
     @property
+    def sampledGillespie(self):
+        return self.__sample_indistinguishable
+        
+    @property
     def T(self):
         """
         length of simulated trajectory in [s]
