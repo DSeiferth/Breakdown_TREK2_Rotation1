@@ -21,8 +21,8 @@ plot3(dataplot(1:N_scatter,1), dataplot(1:N_scatter,2), dataplot(1:N_scatter,3),
 title({ 
     [title_name]
     [title_name2]
-    [' embedding: m = ' num2str(ndim) '; \tau = ' num2str(tau)]
-});
+    ['Embedding: m = ' num2str(ndim) '; \tau = ' num2str(tau)]
+}, 'FontWeight','Normal');
 xlabel('x(i)')
 ylabel('x(i+\tau)')
 zlabel('x(i+2\tau)')
@@ -72,8 +72,8 @@ scatter3(X, Y, Z, s, markerColors, 'filled');
 title({ 
     [title_name]
     [title_name2]
-    [' embedding: m = ' num2str(ndim) '; \tau = ' num2str(tau)]
-});
+    ['Embedding: m = ' num2str(ndim) '; \tau = ' num2str(tau)]
+}, 'FontWeight','Normal');
 xlabel('x(i)')
 ylabel('x(i+\tau)')
 zlabel('x(i+2\tau)')
