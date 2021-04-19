@@ -104,9 +104,9 @@ class ModelBetaFit:
             subset = int(subset_ratio * self.__T/self.__samplingStep )
             f_size =  14
             fig, ax = plt.subplots()
-            fig.suptitle('cut-off frequency ' + str(int(self.__cutoff_fs/1e3)) + 'kHz', fontsize=f_size) #str(mV)+'mV; ' +
+            #fig.suptitle('cut-off frequency ' + str(int(self.__cutoff_fs/1e3)) + 'kHz', fontsize=f_size) #str(mV)+'mV; ' +
             t = np.arange(0,self.__T, self.__samplingStep)
-            ax.plot(t[0:subset], self.__sample_indistinguishable[0:subset], color='yellow', label='not filtered')
+            ax.plot(t[0:subset], self.__sample_indistinguishable[0:subset], color='orange', label='not filtered')
             ax.plot(t[0:subset], self.__y_sos[0:subset], '-', color='black', label='filtered')
             ax.set_xlabel('Time [s]', fontsize=f_size)
             ax.set_ylabel('Current [pA]', fontsize=f_size)
@@ -159,9 +159,10 @@ class ModelBetaFit:
         if log:
             ax.set_ylim(limits[1])
             ax.set_yscale('log')
-            ax.plot([self.__openLevel, self.__openLevel], limits[1],label='current level of open state', color='black')
+            ax.plot([self.__openLevel[0], self.__openLevel[0]], limits[1],label='current levels of open state', color='black')
+            ax.plot([self.__openLevel, self.__openLevel], limits[1], color='black')
         if legend:
-            ax.legend(prop={'size': 11}, loc='upper left')
+            ax.legend(prop={'size': 12}, loc='lower center')# loc='upper left'
         plt.tight_layout()
         if name:
             mV = self.__mV

@@ -161,10 +161,14 @@ class ModelBetaFit:
             ax.legend(prop={'size': 11}, loc='upper left')
         plt.tight_layout()
         if name:
-            mV = self.__mV
-            plt.savefig(name + str(int(self.__cutoff_fs/1e3)) + 'kHz_' +str(mV)+'_mV.pdf', bbox_inches='tight')
+            if 'self.__mV' in vars():
+                mV = self.__mV
+            else:
+                mV = 0
             if log:
                 plt.savefig(name + str(int(self.__cutoff_fs/1e3)) + 'kHz_' +str(mV)+'_mV_log.pdf', bbox_inches='tight')
+            else:
+                plt.savefig(name + str(int(self.__cutoff_fs/1e3)) + 'kHz_' +str(mV)+'_mV.pdf', bbox_inches='tight')
         plt.show()
 
     def WriteOutTrajectories(self, outFolder):
